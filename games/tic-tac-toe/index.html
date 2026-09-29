@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Tic Tac Toe | Hammas Ali</title>
+<meta name="description" content="A polished Ultimate Tic Tac Toe game with Player vs Player and Player vs Computer modes, three real AI difficulty levels including an unbeatable Minimax Hard mode, live stats and persistent match history.">
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🎮 Ultimate Tic Tac Toe</h1>
+    <p>Professional Gaming Edition</p>
+  </header>
+
+  <div class="top-panel">
+    <div class="mode-box">
+      <label for="gameMode">Game Mode</label>
+      <select id="gameMode" aria-label="Choose game mode">
+        <option value="pvp">👥 Player vs Player</option>
+        <option value="cpu">🤖 Player vs Computer</option>
+      </select>
+    </div>
+
+    <div class="mode-box" id="difficultyBox" hidden>
+      <label for="difficulty">Difficulty</label>
+      <select id="difficulty" aria-label="Choose computer difficulty">
+        <option value="easy">🟢 Easy</option>
+        <option value="medium" selected>🟡 Medium</option>
+        <option value="hard">🔴 Hard (Unbeatable)</option>
+      </select>
+    </div>
+
+    <div class="theme-box">
+      <label for="themeBtn">Appearance</label>
+      <button id="themeBtn" type="button" aria-pressed="false">🌙 Dark</button>
+    </div>
+
+    <div class="theme-box">
+      <label for="soundBtn">Sound</label>
+      <button id="soundBtn" type="button" aria-pressed="true">🔊 On</button>
+    </div>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-card">
+      <h3>❌ Player X</h3>
+      <h2 id="xScore">0</h2>
+    </div>
+    <div class="score-card">
+      <h3 id="drawLabel">🤝 Draw</h3>
+      <h2 id="drawScore">0</h2>
+    </div>
+    <div class="score-card">
+      <h3 id="oScoreLabel">⭕ Player O</h3>
+      <h2 id="oScore">0</h2>
+    </div>
+  </div>
+
+  <div class="status">
+    <div id="turn">Player X Turn</div>
+    <div id="timer">00:00</div>
+  </div>
+
+  <div id="aiStatus" class="ai-status" hidden>🤖 Computer is thinking...</div>
+
+  <div class="board" id="board">
+    <div class="cell" data-index="0" tabindex="0" role="button" aria-label="Row 1, Column 1, empty"></div>
+    <div class="cell" data-index="1" tabindex="0" role="button" aria-label="Row 1, Column 2, empty"></div>
+    <div class="cell" data-index="2" tabindex="0" role="button" aria-label="Row 1, Column 3, empty"></div>
+    <div class="cell" data-index="3" tabindex="0" role="button" aria-label="Row 2, Column 1, empty"></div>
+    <div class="cell" data-index="4" tabindex="0" role="button" aria-label="Row 2, Column 2, empty"></div>
+    <div class="cell" data-index="5" tabindex="0" role="button" aria-label="Row 2, Column 3, empty"></div>
+    <div class="cell" data-index="6" tabindex="0" role="button" aria-label="Row 3, Column 1, empty"></div>
+    <div class="cell" data-index="7" tabindex="0" role="button" aria-label="Row 3, Column 2, empty"></div>
+    <div class="cell" data-index="8" tabindex="0" role="button" aria-label="Row 3, Column 3, empty"></div>
+    <div id="winningLine"></div>
+  </div>
+
+  <div id="message">Ready To Play</div>
+
+  <div class="controls">
+    <button id="restartBtn" type="button">🔄 Restart Round</button>
+    <button id="newGameBtn" type="button">🆕 New Match</button>
+    <button id="clearHistoryBtn" type="button">🗑 Clear History</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Total Games</h3>
+      <h2 id="gamesPlayed">0</h2>
+    </div>
+    <div class="stat-card">
+      <h3>Win Rate</h3>
+      <h2 id="winRate">0%</h2>
+    </div>
+    <div class="stat-card">
+      <h3>Current Streak</h3>
+      <h2 id="streak">0</h2>
+    </div>
+    <div class="stat-card">
+      <h3>Best Streak</h3>
+      <h2 id="bestStreak">0</h2>
+    </div>
+    <div class="stat-card">
+      <h3>Avg. Game Time</h3>
+      <h2 id="avgTime">00:00</h2>
+    </div>
+  </div>
+
+  <div class="history">
+    <div class="history-head">
+      <h2>🏆 Match History</h2>
+    </div>
+    <ul id="historyList">
+      <li class="empty-entry">No matches played yet.</li>
+    </ul>
+  </div>
+
+  <div class="settings-row">
+    <button id="resetAllBtn" type="button" class="danger-btn">⚠ Reset All Data</button>
+  </div>
+
+  <!-- Sound Effects (synthesized via Web Audio API in script.js; this element is kept for structure/compatibility) -->
+  <audio id="clickSound" preload="auto" src="sounds/click.mp3"></audio>
+
+  <!-- Confetti Animation -->
+  <div id="confetti" aria-hidden="true"></div>
+
+  <!-- Result Modal -->
+  <div id="resultModal" class="result-overlay" hidden>
+    <div class="result-card" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+      <h2 id="resultTitle">🏆 PLAYER X WINS!</h2>
+      <p id="resultSubtitle">Round complete.</p>
+      <button id="playAgainBtn" type="button">▶ Play Again</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>Created by <strong>Hammas Ali</strong></p>
+  </footer>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
